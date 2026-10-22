@@ -21,7 +21,9 @@ before auditing:
 - `D` auth, database, user data, payments, or uploads: auth, database, Stripe, or
   storage libraries in the dependencies, or API routes that write data.
 - Qualifiers: *(redesign)* when an old site's URLs exist; *(PH)*, *(EU)*, and
-  *(local)* from `docs/sot.md` or the human.
+  *(local)* from `docs/sot.md` or the human; *(own form handler)* when the site's
+  own code receives form posts (a server action, route handler, or function),
+  *(form service)* when a form posts to a hosted service such as Web3Forms.
 
 Also confirm which pass this is: **preview** (the final preview before cutover) or
 **production** (right after the DNS switch). Items that need the live domain

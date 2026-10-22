@@ -1,12 +1,13 @@
 # {{PROJECT_NAME}} — engineering rules
 
-Instructions for work inside this codebase. `CLAUDE.md` beside this file is one
-line, `@AGENTS.md`, so Claude Code and Codex read the same rules.
-
-This file is versioned with the code. Update it in the same commit as any change
-it describes, so it stays accurate at every commit.
+Rules for work inside this codebase, versioned with it: update this file in the
+same commit as any change it describes. `CLAUDE.md` beside it is one line,
+`@AGENTS.md`, so Claude Code and Codex read the same rules.
 
 ## Stack
+
+<!-- SETUP: The stack and its one-line reason. For a default from
+     SETUP-CODEBASE.md, add that row's code notes as bullets. -->
 
 {{STACK}}
 
@@ -89,10 +90,9 @@ into any of them.
 
 ## Project invariants (don't violate without flagging)
 
-The engineering and content invariants from the workspace `AGENTS.md`, repeated on
-purpose because this repository has to stand on its own after handover. Payment
-and approval windows stay in the workspace only. Update both files when an
-invariant changes.
+The workspace `AGENTS.md` invariants, repeated because this repository must stand
+alone after handover; payment and approval windows stay in the workspace only.
+Update both files when an invariant changes.
 
 - {{INVARIANT_1}}
 - {{INVARIANT_2}}
@@ -106,6 +106,19 @@ invariant changes.
   details) renders as a visible placeholder and carries an `APPROVAL:` comment in
   the code saying what's pending. Never invent the real value. Launch needs zero
   markers left.
+
+## Building pages
+
+<!-- SETUP: Delete this section if the codebase has no user interface, and the
+     SEO bullet if it has no public pages. -->
+
+- Colors, type, spacing, radii, and shadows come from the design tokens, never
+  raw values or classes like `bg-white` in a component. *Raw values drift.*
+- Every public page ships with its SEO basics: unique title and description, one
+  H1, alt text, canonical URL, structured data where it fits. *Left for launch,
+  some get missed.*
+- A page composes section components (hero, services, contact), one per file,
+  so diffs stay reviewable. That is no reason to extract a helper used once.
 
 ## Behavioral rules
 
@@ -181,9 +194,8 @@ workspace root, so settings, hooks, and skills load. Update those files, not jus
 chat, whenever something must cross a session or an agent boundary. Specs and plans
 are the exception and stay here.
 
-After handover the workspace isn't part of this repository, so these `../`
-references no longer apply. Everything needed to work on the code stands on its own
-here.
+After handover these `../` paths don't exist; everything needed to work on the
+code stands on its own here.
 
 ## Confidentiality
 

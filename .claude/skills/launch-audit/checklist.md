@@ -2,7 +2,7 @@
 
 *Last reviewed 2026-10. Tool names, framework props, and CVE examples age fastest; refresh them in the starter, not per project.*
 
-**Applies:** `A` every public site · `B` + forms/email · `C` + CMS (WordPress, headless) · `D` + auth, database, user data, payments, uploads. A project at `D` also runs `A`–`C` where relevant. Qualifiers: *(redesign)*, *(PH)*, *(EU)*, *(local)*.
+**Applies:** `A` every public site · `B` + forms/email · `C` + CMS (WordPress, headless) · `D` + auth, database, user data, payments, uploads. A project at `D` also runs `A`–`C` where relevant. Qualifiers: *(redesign)*, *(PH)*, *(EU)*, *(local)*, *(own form handler)*, *(form service)*.
 **Agent:** `script` = an agent runs a command and pastes the output (fits the Codex lane) · `review` = an agent reads the code (Claude Code judgment pass) · `human` = needs account access or a client decision. The agent surfaces legal questions and never answers them.
 `$URL` = the production URL, or the final preview before cutover.
 
@@ -24,7 +24,7 @@
 - [ ] `A` *(local)* Google Business Profile claimed by the client, with name, address, and phone matching the site · verify the GBP dashboard · `human`
 ## Performance & media
 - [ ] `A` Lighthouse mobile performance ≥ 90 on key templates; LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1 · verify PageSpeed Insights or `npx unlighthouse`, plus one real mid-range Android on mobile data · `script`
-- [ ] `A` Images sized to their display, modern format (`next/image` serves WebP; AVIF is opt-in via `images.formats`), width and height set · verify Lighthouse image audits · `script`
+- [ ] `A` Images sized to their display, modern format (`next/image` on a server serves WebP, AVIF opt-in via `images.formats`; a static export prepares images in advance or at build), width and height set · verify Lighthouse image audits · `script`
 - [ ] `A` Below-fold images lazy-load; the hero/LCP image does not (`preload` or `fetchPriority="high"`; `priority` is deprecated in Next 16) · verify Lighthouse "LCP image was lazily loaded" · `review`
 - [ ] `A` Fonts through `next/font` or self-hosted subsets; third-party scripts deferred (`next/script`); YouTube and map embeds behind facades · verify Lighthouse third-party and CLS audits · `review`
 - [ ] `C` CMS page cache and image compression on; an upload size cap for editors · verify PageSpeed on a page the client edited · `script`
@@ -42,8 +42,8 @@
 - [ ] `A` Dependencies audited and the framework patched (for example React2Shell, CVE-2025-55182) · verify `npm audit --omit=dev`, Dependabot alerts on · `script`
 - [ ] `A` Production debugging off: no stack traces or verbose errors shown to users, browser source maps off, `WP_DEBUG_DISPLAY` false · verify trigger an error, send a malformed request · `review`
 - [ ] `A` 2FA on every account that controls the site (GitHub, host, registrar, DNS, CMS admin), with no shared passwords · verify each account's security settings · `human`
-- [ ] `B` Server-side validation on every form and endpoint (a schema such as zod, length limits); client-side checks are only for UX · verify crafted payloads sent with `curl` · `review`
-- [ ] `B` Spam and abuse: a honeypot plus Turnstile/reCAPTCHA or the host's filter (Netlify Forms runs Akismet), and a per-IP rate limit · verify a burst of 20 submissions, then one with the honeypot filled · `script`
+- [ ] `B` *(own form handler)* Server-side validation on every form and endpoint (a schema such as zod, length limits); client-side checks are only for UX · verify crafted payloads sent with `curl` · `review`
+- [ ] `B` Spam and abuse: a honeypot plus a captcha (Turnstile or reCAPTCHA; hCaptcha on Web3Forms) or the host's filter (Netlify Forms runs Akismet); *(own form handler)* a per-IP rate limit; *(form service)* its monthly cap known to the client · verify a burst of 20 submissions, then one with the honeypot filled · `script`
 - [ ] `B` Untrusted content renders escaped: no `dangerouslySetInnerHTML` on CMS or user HTML without DOMPurify, no `javascript:` hrefs · verify grep, paste `<img src=x onerror=alert(1)>` into fields · `review`
 - [ ] `C` WordPress hardened: core, themes, and plugins updated with auto-updates on, unused plugins deleted, `DISALLOW_FILE_EDIT`, admin 2FA and login limits, no `admin` user, XML-RPC off if unused · verify WPScan or Wordfence scan, Site Health · `script`
 - [ ] `D` Authorization checked server-side in every route, server action, and API handler, not only in middleware (see CVE-2025-29927) · verify user A's session against user B's IDs · `review`
@@ -74,7 +74,8 @@
 - [ ] `A` Post-deploy smoke test: key routes return 200, forms deliver, analytics fires, no console errors · verify a Playwright script or a manual pass · `script`
 - [ ] `A` Rollback rehearsed once: host instant rollback (Vercel or Netlify), a tagged release · verify one rollback on staging · `human`
 - [ ] `A` Uptime monitor on the home page and one key endpoint, alerting you (UptimeRobot or Better Stack free tier) · verify a test alert · `human`
-- [ ] `B` Form email sent through a provider (Resend, Postmark, SES) from the client's verified domain with SPF, DKIM, and DMARC; the visitor's address goes in `Reply-To`, not `From` · verify mail-tester.com ≥ 9/10, `dig TXT _dmarc.<domain>`, a test message lands in a Gmail inbox · `script`
+- [ ] `B` *(own form handler)* Form email sent through a provider (Resend, Postmark, SES) from the client's verified domain with SPF, DKIM, and DMARC; the visitor's address goes in `Reply-To`, not `From` · verify mail-tester.com ≥ 9/10, `dig TXT _dmarc.<domain>`, a test message lands in a Gmail inbox · `script`
+- [ ] `B` *(form service)* Messages reach the client's inbox, not spam, and replying reaches the visitor · verify a test submission lands in a Gmail inbox, then reply to it · `script`
 - [ ] `C` `D` Backups automated and stored off the host, with one restore tested (WordPress: UpdraftPlus or host snapshots; databases: check the plan, since free tiers may have none) · verify a restore to staging · `human`
 - [ ] `C` WordPress "Discourage search engines" unchecked on production; a content workflow from staging to production agreed · verify wp-admin → Reading · `human`
 - [ ] `D` Error tracking (Sentry or host alerts), with source maps uploaded privately · verify a test error arrives · `script`

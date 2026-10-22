@@ -76,7 +76,7 @@ it removed and why.
 
 | Part | What it is | Who writes it |
 |---|---|---|
-| `app/` | The code: a repository inside the workspace. Setup renames it to the project slug by default, so the code sits at `<slug>/<slug>/` (and avoids `app/app/` in frameworks that have their own `app/` folder). On client work it is what the client receives. It stays uncreated until the stack is decided; its `SETUP-CODEBASE.md` marks that. | Agents, during the build |
+| `app/` | The code: a repository inside the workspace. Setup renames it to the project slug by default, so the code sits at `<slug>/<slug>/` (and avoids `app/app/` in frameworks that have their own `app/` folder). On client work it is what the client receives. It stays uncreated until the stack is decided; its `SETUP-CODEBASE.md` marks that and lists the default stacks. | Agents, during the build |
 | `project-status.md` | **Now** (three lines: focus, next, waiting on), the build list, milestones, launch checks, and blockers. | Agents every session; sign-offs and money only on your word |
 | `open-items.md` | Questions and risks parked for later, each with what resolves it. | Agents and you |
 | `logs/` + `session-log.md` | **The diary.** What happened in a session and why: one file per session, plus a one-row-per-session index. Written once and not edited after. Read when you need the history of something. | Agents, at the end of sessions that decided something |
@@ -133,6 +133,26 @@ Worktrees of the code go in `.worktrees/<branch>` at the root
 (`git -C <slug> worktree add ../.worktrees/<branch> -b <branch>`). Claude Code's
 built-in worktree command, started at the root, would branch the planning
 repository instead.
+
+## Default stacks
+
+Setup proposes a stack from the defaults at the end of `app/SETUP-CODEBASE.md`,
+and you confirm or override it. A stack the contract or the client requires comes
+first.
+
+| Project | Default |
+|---|---|
+| Brochure site (pages and a contact form) | Next.js as a static export, Tailwind CSS, Web3Forms, Netlify |
+| Web app (logins, a database) | Next.js, Supabase, Tailwind CSS, shadcn/ui |
+| Mobile app | Expo (React Native), Supabase |
+
+Each row carries its reason and notes: for the brochure site, what a static export
+gives up (server code, automatic image optimization) and how to keep one client's
+Netlify usage from pausing another's site. Setup copies the code notes into the
+codebase `AGENTS.md` and the account notes into `docs/accounts.md`. A project no
+row fits, such as a CMS the client edits or an inherited codebase, gets two or
+three options for you to decide. Rows name frameworks, not versions: the first
+scaffold installs the current release and reads its docs.
 
 ## Apps with a frontend and a backend
 
@@ -246,7 +266,8 @@ an undecided stack: the codebase simply waits until it's chosen.
 
 ## Why it's built this way
 
-Each rule fixes a failure seen on a real project. A short version of each reason
+Each rule fixes a failure seen on a real project, except where a reason below says
+it was adopted on judgment. A short version of each reason
 sits beside the rule in the files themselves, so an agent reading one file alone
 still knows why the rule exists.
 
@@ -275,6 +296,21 @@ client receives, and private material must never have been in its history.
 **A codebase is created when its stack is decided.** A codebase repository created
 before the stack was chosen held one commit and a page of TODOs for two months,
 while the real work happened elsewhere.
+
+**Default stacks, not one locked stack.** That same stack stayed undecided for the
+whole two months, and researching a stack afresh for every project gives a
+different answer each time, so nothing carries over. AI app builders such as
+Lovable and v0 solve this by locking one stack, because their sandbox and preview
+run only that one. A locked stack has its own cost: Lovable moved new projects off
+its client-rendered stack in 2026 because crawlers could see empty pages. A coding agent
+has no sandbox limit, so the starter keeps one default per kind of project, all
+React and TypeScript so skills carry across, and still lets setup choose otherwise.
+
+**Page rules adopted on judgment.** The codebase `AGENTS.md` asks for design tokens
+instead of raw values, SEO basics on every page, and pages built from section
+components. The prompts of Lovable and v0 require the same. These rules haven't yet
+been tested against a failure on a real project; change them when one shows a rule
+failing or getting in the way.
 
 **Budgets are checked by a script, not just stated.** Stating a row budget in a
 file's header wasn't enough. One session index reached 80 KB in nine weeks under a

@@ -197,7 +197,12 @@ Codebases
     `<slug>/<slug>/` (avoids `app/app/` with frameworks that use an `app/`
     folder). With several, name each for what it is. The name is settled now
     even if the codebase isn't created yet.
-  - Is the stack decided? If NOT, the codebase waits (see Step 5).
+  - The stack. If the contract or the client requires one, use it. Otherwise
+    propose the matching row from "Default stacks" at the end of
+    app/SETUP-CODEBASE.md, with its reason, for me to confirm or override. If
+    no row fits, give me two or three options with their trade-offs to decide,
+    and record the choice and reason in the setup log. Until I confirm a stack,
+    the codebase waits (see Step 5).
   - New, or an existing repository someone else owns? Never re-initialize an
     existing clone, and ask before adding agent files to it.
   - GitHub: which account or organization owns it, the repository name, who
@@ -205,7 +210,7 @@ Codebases
     step 4 uses these answers; don't ask them twice).
 
 Stack and commands  [per decided codebase]
-  - Stack and default branch (default `main`).
+  - Default branch (default `main`).
   - The exact command strings for install, dev server, test, type-check, lint,
     build, and deploy preview. Push for literal strings, because an agent that
     guesses `npm test` versus `pnpm test` guesses wrong.
@@ -220,7 +225,9 @@ Stack and commands  [per decided codebase]
 
 Hosting and backup
   - Where previews and production will live, and who owns those accounts. A
-    preview URL early in the project is part of the standard flow.
+    preview URL early in the project is part of the standard flow. With a
+    default stack, propose its host, and put its row's account notes in
+    docs/accounts.md (Step 4).
   - Should the private root repository get a private remote as a backup?
     Client projects: pushing the client's sources to a hosting service is
     itself something the terms must permit, so ask about that too.
@@ -280,7 +287,8 @@ STEP 4: FILL
 4. Seed project-status.md's Build list from docs/sot.md.
 5. Create docs/accounts.md from the Hosting answers: a table of service, who
    owns the account, and where its credential lives (a password manager entry,
-   the client's admin). Never the credential itself.
+   the client's admin). Never the credential itself. With a default stack, add
+   its row's account notes below the table.
 6. Keep the one-line reasons that sit beside rules. They tell an agent reading one
    file why the rule exists. Don't add sections I didn't ask for, and don't soften
    a rule because it reads as strict.
