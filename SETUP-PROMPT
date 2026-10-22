@@ -300,8 +300,10 @@ STEP 5: BUILD
 3. Plugins: `.claude/settings.json` enables superpowers and runs the check
    script at session start. Leave both. Add other plugins only as item 6 says
    or I ask.
-4. Codex. If Codex is in play, keep `.agents/skills/` (Codex's skills folder,
-   holding links to the `.claude/skills/` copies) and `.codex/hooks.json` (it
+4. Codex. If Codex is in play, link every skill in `.claude/skills/` into
+   Codex's folder: for each `<name>`, run `ln -s ../../.claude/skills/<name>
+   .agents/skills/<name>` (the starter ships no links, because some copy tools
+   break them), and delete `.agents/skills/.gitkeep`. Keep `.codex/hooks.json` (it
    runs the check script at Codex session start). Tell me in the report that
    Codex loads project hooks only after I trust the project and approve them with
    `/hooks` in my first Codex session here, and again whenever hooks.json
