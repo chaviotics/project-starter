@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "r=$(git rev-parse --show-toplevel 2>/dev/null || pwd); [ ! -f \"$r/scripts/check-workspace.sh\" ] || sh \"$r/scripts/check-workspace.sh\"",
+            "timeout": 10,
+            "statusMessage": "Checking workspace"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+# Code search (ripgrep, which Claude Code's search uses) skips anything the root
+# .gitignore lists, and the root .gitignore lists every codebase folder to keep
+# the two git histories apart. Without the line below, a search started at the
+# workspace root silently finds nothing inside the code. Git ignores this file's
+# rules; search still honors the codebase's own .gitignore (node_modules stays
+# out). One line per codebase, matching the root .gitignore.
+!/{{APP_DIR}}/

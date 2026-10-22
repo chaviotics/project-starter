@@ -1,0 +1,429 @@
+You are setting up a new project workspace. This folder is a starter that was
+copied here. Your job:
+  - learn the project from the documents in docs/source/ first, and only then from
+    me, asking only about what the documents don't answer
+  - fill in the files, build what's missing, and remove what doesn't apply
+  - delete the setup files (SETUP-PROMPT, README.md, and each SETUP-CODEBASE.md)
+    once the workspace is ready
+
+Work through the steps in order. Do not write application code, scaffold a
+framework, or install dependencies. This task ends when the workspace is ready.
+
+Throughout: anything ruled out gets DELETED, never filled with "N/A". If an answer
+is still unknown after asking, add a row to `open-items.md` and write
+`TODO: <what's missing> (open-items #N)` where the answer belongs. The check script
+accepts a TODO that names its open item and flags one that doesn't. Never guess,
+and never leave a {{placeholder}}.
+
+================================================================================
+STEP 0: CHECK WHERE YOU ARE
+================================================================================
+
+Until the gate in Step 1 is answered, don't open or list anything inside
+docs/source/.
+
+1. Run `pwd`. If any folder above this one contains a `_project-starter/` folder,
+   this is the master copy, or a copy made inside the repository that holds it.
+   STOP and tell me to copy it to where my projects live instead, for example:
+       cp -R _project-starter ~/Projects/<project-slug>
+2. If this folder's name still contains `project-starter`, it hasn't been renamed.
+   STOP, ask me for the project slug, and tell me to rename the folder and start
+   a fresh session inside it. Renaming the folder a session is running in breaks
+   that session.
+3. If this folder is already a Git repository with commits, STOP and ask. Setup
+   commits only at the very end, so commits mean this isn't a fresh copy.
+4. If SETUP-PROMPT is here but some files are already filled in, an earlier setup
+   was interrupted. Tell me which steps look done, and continue from the first
+   unfinished one instead of starting over.
+
+================================================================================
+STEP 1: THE GATE (ask before opening anything in docs/source/)
+================================================================================
+
+Ask these three together:
+
+  1. Is this a client project or a personal one? Work done for someone else
+     counts as a client project, paid or not.
+  2. Which AI tools will work on it? Propose the default: Claude Code as the main
+     tool, with Codex as an optional backup and second opinion. Accept Claude
+     Code only, or both.
+  3. Client projects only: for EACH of those tools, have the engagement letter,
+     NDA, or institutional terms been confirmed to permit processing this
+     client's material with it? Answer yes, no, or unconfirmed per tool. Each AI
+     vendor clears separately.
+
+Record each tool's status in AGENTS.md (Confidentiality) and in the "AI-vendor
+processing cleared" row of project-status.md's Launch checks.
+A tool that isn't cleared must not read the client's material in any form: not
+`docs/source/`, and not `docs/sot.md` or `memory/`, which are built from it.
+
+Reading a client's documents through an AI tool IS the act this gate controls.
+If the project is a client project and the answer for your own vendor is
+anything but an explicit yes:
+  - do NOT open any file in docs/source/, including kickoff-notes.md, which
+    describes the client's work too
+  - say so plainly; the status goes into AGENTS.md and project-status.md as
+    unconfirmed
+  - skip Step 2 and answer every question in Step 3 by interviewing me, using only
+    what I choose to tell you. Retyping a document's contents into chat is the
+    same disclosure, so don't ask me to.
+  - add this to `.claude/settings.json` (merge with what's there):
+        "permissions": { "deny": ["Read(/docs/source/**)"] }
+    It blocks Claude Code's file tools and common shell reads (`cat`, `head`)
+    on the folder, so a later session can't open it by accident. It is a
+    backstop, not a substitute for this rule: a bare `grep -r .` isn't covered,
+    and Codex has no equivalent setting.
+  - add an open item: "When <vendor> is cleared for this client's material:
+    remove the docs/source deny rule from .claude/settings.json, read
+    docs/source/, write its index, and re-cite docs/sot.md against the
+    originals."
+  - anything that must be copied verbatim from a document you can't open
+    (phase names, acceptance wording, response or payment windows) is written
+    as `TODO: verbatim from <document> once cleared (open-items #N)`. Don't
+    fill in default phases in its place.
+
+If your own vendor IS cleared but another tool in use is not, set up normally,
+and make sure the Confidentiality section in AGENTS.md names the uncleared tool
+and what it must not open.
+
+================================================================================
+STEP 2: READ THE SOURCES
+================================================================================
+
+1. Read `docs/source/kickoff-notes.md` first. These are my own words and they
+   outrank my guesses, but not a signed document.
+2. Read every other file in docs/source/:
+     - PDFs, images, Markdown, text, CSV: read them directly. For a long PDF,
+       `pdftotext -layout "<file>" -` is faster where it is installed
+     - .docx / .doc / .rtf / .odt: `textutil -convert txt -stdout "<file>"`
+     - .pages / .numbers / .key / .xlsx: ask me to export to PDF or CSV and drop
+       the export beside the original
+     - anything else you cannot read: list it and keep going
+3. Never rename, move, edit, or delete an original. (The starter's own
+   docs/source/README.md isn't an original; step 5 replaces it.)
+4. If a document contains passwords, API keys, or tokens, note the file and
+   location for the report. Never copy the value anywhere.
+5. Replace docs/source/README.md with an index: one table row per file, giving
+   the file name, what it is, its date or version if visible, and what it was used
+   for. Keep the original README's first rule line: originals are never edited.
+
+================================================================================
+STEP 3: DRAFT EVERY ANSWER, THEN ASK ONLY ABOUT THE GAPS
+================================================================================
+
+Present ONE table covering every question below:
+
+    | Question | Draft answer | Basis |
+
+Basis is one of: the file and page or section it came from · "your notes" ·
+"my guess" · "missing".
+
+Then ask me to correct anything wrong and fill what's missing, in small related
+batches. A "my guess" I don't correct stands, except in three places where I must
+confirm each answer in this conversation, never taken from a document or a guess
+alone:
+  - whether the governing document is signed
+  - AI-vendor clearance (already asked in Step 1)
+  - money: amounts, payment schedule, payment triggers, and which payments are
+    already invoiced or paid
+Invariants also need my explicit yes.
+
+--------------------------------------------------------------------------------
+The four shaping questions. Decide each one separately; never infer one from
+another. A client project can be unsigned, and a personal project can involve
+money.
+--------------------------------------------------------------------------------
+
+  A. Client or personal? (from Step 1)
+  B. Is there a contract, TOR, SOW, or written proposal defining the work? Where
+     is it, and is it signed? If it exists unsigned, setup may continue, but build
+     work and sharing the other party's material wait on signature.
+  C. Is money tied to acceptance of specific deliverables? If yes, build the
+     Milestones section. If no, delete it.
+  D. Light or full?
+       Light: one codebase, weeks rather than months.
+       Full: several phases with separate sign-offs, months of work, or more
+       than one codebase.
+     Payment doesn't decide size; that is question C's job. A small site paid
+     50/50 is light with two milestones. An undecided stack doesn't either: the
+     codebase simply waits, at either size (Step 5).
+     A governing document that names phases always supplies them, at either
+     size. Otherwise light has NO Phases section (the build list, milestones,
+     and launch checks carry its progress), and full takes its phases from the
+     standard list in the appendix at the end of this prompt, trimmed to what
+     the project involves. Full also maps each launch check to its phase.
+
+--------------------------------------------------------------------------------
+The rest. Skip a group when the shaping answers rule it out.
+--------------------------------------------------------------------------------
+
+Identity
+  - Project name, as a person would say it.
+  - Project slug: must match this folder's name.
+  - Client name. [client only]
+
+Governing document  [only if B = yes]
+  - Phase names and numbering, VERBATIM, if it names any.
+  - Payment schedule, and the document's own wording for what proves each
+    milestone met. Never paraphrase acceptance criteria into something looser.
+  - Response or payment windows (days to approve, days to pay, what happens when
+    one lapses). These become invariants and dated deadlines.
+  - The client's responsibilities. These seed "Blocked on others".
+  - If the gate kept you from opening it, see Step 1: verbatim fields become
+    TODOs that name their open item.
+
+Route  [full projects]
+  - Which route fits (greenfield, redesign, design provided, web app,
+    maintenance, API only, or a blend)? Use the routes in the appendix. Whatever
+    the route skips or shrinks becomes rows in project-status.md, decided now,
+    not discovered later.
+
+Codebases
+  - How many, and what is each one? Most projects have one. A project with no
+    code at all (documents, research, images) has none.
+  - Does the code have separate parts (a frontend and a backend, say)? First
+    check it needs them: a full-stack framework (Next.js route handlers or server
+    actions, plus a hosted database) usually covers both in one app. A separate
+    backend is needed when another client (a mobile app, a partner) uses the
+    same API, the backend is in another language, or it runs heavy background
+    work. If it does have parts, the default is ONE repository with each part as a folder inside
+    it (`<slug>/<slug>/client/`, `<slug>/<slug>/server/`): one thing to hand
+    over, and API and UI changes land in the same commit. Use separate
+    repositories (one codebase each, side by side at this root) only when
+    different people or teams own the parts, they ship on separate schedules, or
+    the client requires it; ask before choosing that. The database is hosted, not
+    a folder: its schema and migrations live in the backend part.
+  - The folder name for each one. Default: the project slug, so the code sits at
+    `<slug>/<slug>/` (avoids `app/app/` with frameworks that use an `app/`
+    folder). With several, name each for what it is. The name is settled now
+    even if the codebase isn't created yet.
+  - Is the stack decided? If NOT, the codebase waits (see Step 5).
+  - New, or an existing repository someone else owns? Never re-initialize an
+    existing clone, and ask before adding agent files to it.
+  - GitHub: which account or organization owns it, the repository name, who
+    creates it, its visibility, and the commit name and email (SETUP-CODEBASE.md
+    step 4 uses these answers; don't ask them twice).
+
+Stack and commands  [per decided codebase]
+  - Stack and default branch (default `main`).
+  - The exact command strings for install, dev server, test, type-check, lint,
+    build, and deploy preview. Push for literal strings, because an agent that
+    guesses `npm test` versus `pnpm test` guesses wrong.
+  - Everything not knowable until the first scaffold (missing commands, where
+    things live, an unset GitHub remote) shares ONE open item, "Finish codebase
+    setup after the first scaffold", and each gap is written as
+    `TODO: <what> (open-items #N)` with that one number.
+  - Anything an agent must not do with the dev server (shared ports, processes I
+    run myself).
+  - Where things live (routing, styling, data). If the code doesn't exist yet,
+    it's one of the gaps above; never invent a layout.
+
+Hosting and backup
+  - Where previews and production will live, and who owns those accounts. A
+    preview URL early in the project is part of the standard flow.
+  - Should the private root repository get a private remote as a backup?
+    Client projects: pushing the client's sources to a hosting service is
+    itself something the terms must permit, so ask about that too.
+
+Design
+  - Does the project have a user interface? That decides the design-skill step.
+  - Is there an existing brand or design system? Where?
+  - Which ONE primary design skill? Default and recommended: impeccable
+    (direction, DESIGN.md, critiques, and a detector hook that checks UI edits).
+    Offer the alternatives only if I ask: design-taste-frontend (heavy, for
+    landing pages) or ui-ux-pro-max (better as reference data than as the
+    primary). Overlapping design skills give conflicting direction.
+
+Invariants
+  - What must never be violated without flagging it to me first? Get at least
+    three concrete ones. Examples to prime the answer: never invent prices,
+    claims, testimonials, or contact details (show placeholders for approval
+    instead) · no new paid or recurring services without approval · no new
+    dependencies without approval · WCAG AA · a browser-support floor · a fixed
+    deploy target.
+  - Every response or payment window from the governing document is an
+    invariant too. These commercial invariants stay in the root AGENTS.md and
+    are never copied into a codebase, because the codebase is client-visible.
+  - If the governing document exists but is unsigned, add this invariant to
+    the root AGENTS.md: "No build work, and no sharing of <other party>'s
+    material, until <document> is signed and any deposit has cleared."
+
+Other-party obligations  [client only]
+  - What must the client supply, by when, and what does each item block? Each
+    becomes a "Blocked on others" row.
+
+Confidentiality  [personal only]
+  - Does any material here belong to someone else (another project's code,
+    licensed assets)? Write the answer as one line in the AGENTS.md
+    Confidentiality section: what must not be copied in or referenced out.
+
+================================================================================
+STEP 4: FILL
+================================================================================
+
+1. Replace every {{PLACEHOLDER}} in every file from the answers, except the
+   files inside the codebase folders, which Step 5 fills. Delete fields the
+   shaping questions ruled out instead of writing "N/A".
+2. Build project-status.md section by section, following its SETUP: comments,
+   then strip every SETUP: comment. Leave the Now lines for Step 6. Dates from
+   the governing document go in the Build list's Due column or the milestone
+   rows; they are not phases unless the document calls them phases. A payment
+   triggered by signing gets the signing date as Approved, and whatever I said
+   about invoicing and payment.
+3. Write docs/sot.md, the source of truth, from the sources and answers:
+     What it is and why · Who it's for and who decides · Scope in and out ·
+     Pages or features · Content and assets (what exists, what's missing) ·
+     Constraints and invariants · Key dates · Open questions
+   Every fact cites its source file, or "interview YYYY-MM-DD" when it came from
+   me. Where sources disagree, list both and mark the conflict; don't resolve it
+   yourself. Light projects get one page.
+4. Seed project-status.md's Build list from docs/sot.md.
+5. Create docs/accounts.md from the Hosting answers: a table of service, who
+   owns the account, and where its credential lives (a password manager entry,
+   the client's admin). Never the credential itself.
+6. Keep the one-line reasons that sit beside rules. They tell an agent reading one
+   file why the rule exists. Don't add sections I didn't ask for, and don't soften
+   a rule because it reads as strict.
+
+================================================================================
+STEP 5: BUILD
+================================================================================
+
+1. Git at the root: `git init -b main`. Don't commit yet; the first commit
+   comes after verification in Step 6. It uses my global git identity unless I
+   gave another. If I approved a private remote in Step 3, add it now; push
+   after the first commit.
+2. Memory: create `.claude/settings.local.json` containing
+       { "autoMemoryDirectory": "<absolute path of this folder>/memory" }
+   so Claude Code's own memory writes into memory/. Settings in that file are
+   honored once the folder is trusted.
+3. Plugins: `.claude/settings.json` enables superpowers and runs the check
+   script at session start. Leave both. Add other plugins only as item 6 says
+   or I ask.
+4. Codex. If Codex is in play, keep `.agents/skills/` (Codex's skills folder,
+   holding links to the `.claude/skills/` copies) and `.codex/hooks.json` (it
+   runs the check script at Codex session start). Tell me in the report that
+   Codex loads project hooks only after I trust the project and approve them with
+   `/hooks` in my first Codex session here, and again whenever hooks.json
+   changes; and that superpowers can be installed in Codex too (`/plugins`, then
+   search "superpowers"). If Codex is not in play, delete `.codex/` and
+   `.agents/`.
+5. Codebases. The starter ships one codebase folder, `app/`, holding a template
+   `AGENTS.md`, a one-line `CLAUDE.md`, and `SETUP-CODEBASE.md` (its creation
+   steps).
+     - Rename the folder to the name chosen in Step 3. With more than one
+       codebase, copy it once per codebase before filling anything, and repeat
+       the Codebases table row, the workspace-map line, the root .gitignore
+       line, and the root .ignore line once per codebase.
+     - For each codebase whose stack is decided: follow its SETUP-CODEBASE.md
+       steps 1-9. Step 9 deletes that file.
+     - If a stack is NOT decided yet: leave that folder as it is.
+       SETUP-CODEBASE.md staying in it marks it as not created, and the check
+       script skips it. Add an open item: "Create <folder>/ once the stack is
+       decided: follow <folder>/SETUP-CODEBASE.md." In AGENTS.md, write that
+       codebase's Stack as `TODO: undecided (open-items #N)` and its Origin as
+       "not created yet".
+     - No code at all: delete the folder, its .gitignore and .ignore lines,
+       its Codebases table and map lines, and the Planning artifacts section of
+       AGENTS.md.
+6. Design, only if the project has a UI. Install the ONE primary skill chosen in
+   Step 3, and never pair impeccable with frontend-design or taste-skill: they
+   pick directions and house styles that contradict each other.
+     - impeccable (default): `npx impeccable install` sets up the skill and its
+       detector hooks for Claude Code and Codex. Don't hand-write hook commands;
+       its hook paths change between versions. On client work, set
+       `"telemetry": false` in `.impeccable/config.json`. Then run
+       `/impeccable init`, which writes PRODUCT.md from the brief.
+     - ui-ux-pro-max: `/plugin marketplace add nextlevelbuilder/ui-ux-pro-max-skill`
+       then `/plugin install ui-ux-pro-max@ui-ux-pro-max-skill`; for Codex,
+       `npm install -g ui-ux-pro-max-cli` then `uipro init --ai codex`. Don't use
+       its `--persist` design-system output alongside DESIGN.md.
+     - design-taste-frontend: `npx skills add https://github.com/Leonxlnx/taste-skill --skill "design-taste-frontend"`.
+   These commands were current in 2026-10; if one fails, read the skill's own
+   README rather than guessing. Ask me before running an installer, since it
+   reaches the network; if I say not now, note the exact command in the setup
+   log so it can be run later. With Codex in play and a skill installed only under
+   `.claude/skills/<name>`, link it: `ln -s ../../.claude/skills/<name>
+   .agents/skills/<name>` (Codex follows symlinked skill folders).
+   Create `docs/design/decisions.md` with a one-line header: "One line per
+   accepted or rejected design variant: date, page or component, decision,
+   reason." DESIGN.md comes later, when tokens exist (`/impeccable document`).
+7. Launch audit. Keep `.claude/skills/launch-audit/` (and its `.agents/skills/`
+   link) for any project that ships a website or web app; it is run before
+   launch with `/launch-audit`. Delete both for a project with no site.
+
+================================================================================
+STEP 6: VERIFY, CLEAN UP, REPORT
+================================================================================
+
+1. Run `sh scripts/check-workspace.sh`. It should end at "ok". A TODO that names
+   its open item doesn't warn; fix anything that does, and run it again.
+2. Confirm every CLAUDE.md is exactly one line, `@AGENTS.md`. This is the most
+   important structural rule here: an expanded CLAUDE.md brings back the drift
+   this design prevents.
+3. Confirm that `git status` at the root lists nothing from inside a codebase
+   directory.
+4. Write the first log entry from logs/_template.md covering this setup, add its
+   row to session-log.md, and set the Now lines in project-status.md: usually
+   Focus "workspace set up", Next "first build session", and what you're waiting
+   on. If the governing document is unsigned or AI processing isn't cleared,
+   Next says so, and Waiting on names who.
+5. Delete SETUP-PROMPT and README.md from this folder, run the check script once
+   more, then make the first commit of the root repository. The setup files
+   never enter its history.
+6. Report back, leading with any gate problem (a tool not cleared for client
+   material, or a governing document that exists unsigned):
+     - the final directory tree
+     - every section or field removed, and which answer removed it
+     - every TODO: still open, with its open-item number
+     - each tool's confidentiality status, the governing-document status, and
+       whether the docs/source deny rule is in place
+     - source files that couldn't be read, and any credentials found (location
+       only, never the value)
+     - if Codex is in play: the `/hooks` approval it needs on first use
+
+================================================================================
+APPENDIX: STANDARD PHASES AND ROUTES
+================================================================================
+
+For full projects whose governing document names no phases. Trim to what the
+project involves; skipped phases stay as ⏭ rows with the route as the reason.
+
+The spine that is never skipped, however small the job: 1 (the ask written down)
+→ 2 (signed, and any deposit cleared, before build) → 3 (sources of truth and the
+AI-vendor gate) → 10 (security, scaled) → 11 (never straight to production) → 13
+(handover tied to the final payment trigger).
+
+   1  Discovery and intake: the real problem, in the client's words.
+   2  Proposal, contract, onboarding: quote, sign, deposit, kickoff; terms set.
+   3  Sources of truth: everything real consolidated into docs/sot.md.
+   4  IA and UX audit (redesigns): what exists, what's broken, the URL inventory.
+   5  Design system: direction, tokens, type, spacing.
+   6  Mockups and review: sign-off before it gets expensive.
+   7  Build setup: specs, plans, the codebase AGENTS.md.
+   8  Implementation: risk-first, split into sub-phases, checkpoint demos.
+   9  QA and testing: devices, accessibility, performance, content.
+  10  Security and hardening: scaled to the attack surface; never skipped.
+  11  Deployment: preview or staging before production.
+  12  SEO and analytics: set up and verified; preserved on a redesign.
+  13  Handover: docs, credentials, ownership, final payment.
+  14  Maintenance: terms decided, not defaulted.
+  15  Retrospective: lessons go back into the starter.
+
+Routes (a project can be a blend; record each part):
+
+  A  Greenfield (new site or app, no design yet): skip 4.
+  B  Redesign of an existing site: all phases. 4 also produces content-migration
+     decisions and the URL inventory; 11 runs a cutover (redirects live before
+     DNS moves, email untouched); 12 preserves existing SEO. Get the existing code
+     running instead of scaffolding.
+  C  Design provided (Figma or brand book): skip 4. 5 extracts tokens from the
+     design and lists what it doesn't specify (states, breakpoints, validation);
+     6 shrinks to a fidelity check plus sign-off on the gap-filling decisions.
+  D  Web app (auth, data, dashboards): 4-6 shrink to key screens; 7-8 grow, with
+     data model, auth, and API contract as sub-phases; 10 runs in full; 12 swaps
+     SEO for product analytics.
+  E  Maintenance or small fixes: 1-3 collapse into one intake; no mockups or
+     design system; work session by session; 10 still applies, scaled.
+  F  Backend or API only: skip 4-6; API-contract design replaces 5 inside 7; the
+     SEO half of 12 usually doesn't apply.

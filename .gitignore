@@ -1,0 +1,42 @@
+# Codebase repositories: ignored by name so the two histories never touch.
+#
+# Each codebase directory is a separate repository and is what the client
+# receives. Nothing from this private root may ever enter its history. Add a line
+# the moment a new codebase directory is created.
+#
+# Anchor every pattern with a leading slash. A bare `app/` matches a folder of that
+# name at ANY depth, and `git add` on an ignored path fails silently, so nested
+# folders with the same name quietly never get committed.
+/{{APP_DIR}}/
+
+# Machine-specific settings (absolute paths, local permissions) and secrets.
+/.claude/settings.local.json
+CLAUDE.local.md
+.env
+.env.*
+!.env.example
+
+# Agent worktrees and session scratch. Durable results belong in docs/ and logs/.
+# Worktrees of a codebase live in /.worktrees/<branch>; Claude Code's own default
+# location and the superpowers scratch folder are ignored too.
+/.worktrees/
+/.claude/worktrees/
+/.superpowers/
+/tmp/
+/.tmp/
+
+# Regenerable QA output: screenshots and console captures stay local. Written
+# reports and measured JSON results are kept.
+/docs/**/screenshots/**
+/docs/**/evidence/**/*.png
+/docs/**/evidence/**/*.log
+
+# Tool caches.
+/.impeccable/hook.cache.json
+/.impeccable/critique/evidence/
+/.netlify/
+/.vercel/
+
+# OS and office lock files.
+.DS_Store
+~$*
