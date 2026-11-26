@@ -136,6 +136,19 @@ if [ -f AGENTS.md ]; then
   rm -f "${TMPDIR:-/tmp}/check-workspace.$$"
 fi
 
+# 8b. Every created codebase says how finished work lands (its Shipping section):
+#     agents and idea-to-merge skills read it, and a cloud session sees only it.
+if [ -f AGENTS.md ]; then
+  sed -n 's/^| `\([^`/]*\)\/` |.*/\1/p' AGENTS.md | while IFS= read -r d; do
+    [ -e "$d/.git" ] && ! parked "$d" && [ -f "$d/AGENTS.md" ] \
+      && ! grep -q '^## Shipping' "$d/AGENTS.md" && echo "$d"
+  done > "${TMPDIR:-/tmp}/check-workspace-ship.$$"
+  while IFS= read -r d; do
+    warn "$d/AGENTS.md: no \"## Shipping\" section; add one so agents know how finished work lands"
+  done < "${TMPDIR:-/tmp}/check-workspace-ship.$$"
+  rm -f "${TMPDIR:-/tmp}/check-workspace-ship.$$"
+fi
+
 # 9. Git boundary: every codebase repository is ignored by the root, and the root
 #    tracks nothing inside it.
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then

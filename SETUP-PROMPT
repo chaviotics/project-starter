@@ -214,6 +214,12 @@ Stack and commands  [per decided codebase]
   - The exact command strings for install, dev server, test, type-check, lint,
     build, and deploy preview. Push for literal strings, because an agent that
     guesses `npm test` versus `pnpm test` guesses wrong.
+  - Shipping: how finished work lands, for the codebase's Shipping section.
+    Merge (default: one `--no-ff` merge when I say "land it"; or automatically
+    after the gate and an independent review; or through a pull request I merge).
+    Push (default: waits for my word). Any extra stop-and-ask items, the areas
+    that deserve the strongest reviewer (auth, payments, data), and shared test
+    devices or accounts that one session may use at a time.
   - Everything not knowable until the first scaffold (missing commands, where
     things live, an unset GitHub remote) shares ONE open item, "Finish codebase
     setup after the first scaffold", and each gap is written as

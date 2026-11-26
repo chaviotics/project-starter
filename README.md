@@ -58,6 +58,7 @@ it removed and why.
 │   ├── sot.md               <- source of truth, every fact cited
 │   ├── accounts.md          <- services, owners, where credentials live (never the values)
 │   ├── design/decisions.md  <- UI projects: accepted and rejected design choices
+│   ├── research/            <- other products, researched ideas, one brief per idea
 │   └── source/              <- originals as received, never edited
 ├── scripts/
 │   └── check-workspace.sh   <- flags files drifting past their limits
@@ -81,7 +82,7 @@ it removed and why.
 | `open-items.md` | Questions and risks parked for later, each with what resolves it. | Agents and you |
 | `logs/` + `session-log.md` | **The diary.** What happened in a session and why: one file per session, plus a one-row-per-session index. Written once and not edited after. Read when you need the history of something. | Agents, at the end of sessions that decided something |
 | `memory/` | **The lessons.** One lasting fact per file (a client preference, a gotcha, a rejected option), corrected or deleted when it stops being true. Loaded at the start of every session. | Agents, and you can edit any file |
-| `docs/` | What the project *is*: the source of truth, original sources, design, deliverables. Parts of it may be shared with the client. | You and agents |
+| `docs/` | What the project *is*: the source of truth, original sources, design, research on other products and ideas, deliverables. Parts of it may be shared with the client. | You and agents |
 | `.claude/skills/launch-audit/` | A pre-launch audit both tools can run (`/launch-audit`): SEO, performance, accessibility, security, privacy, analytics, deploy, and handover, scoped to what the site actually has (forms, CMS, auth, payments). Run it on the final preview and again after the domain goes live. | Agents, before launch |
 | `scripts/` | `check-workspace.sh`, which runs at every session start and warns when a file outgrows its limits, the status goes stale, memory points to the wrong place, or the git boundary breaks. It only reads; it never changes anything. | Nobody; it ships with the starter |
 
@@ -129,10 +130,23 @@ Create skills, agents, hooks, and MCP servers when a need appears, not in advanc
 Right after the first framework scaffold, run the claude-code-setup automation
 recommender once and adopt only what you approve.
 
-Worktrees of the code go in `.worktrees/<branch>` at the root
-(`git -C <slug> worktree add ../.worktrees/<branch> -b <branch>`). Claude Code's
+Worktrees of the code go in `.worktrees/` at the root, named after the branch with `/`
+replaced by `-` (`git -C <slug> worktree add ../.worktrees/<name> -b <branch> <default-branch>`). Claude Code's
 built-in worktree command, started at the root, would branch the planning
 repository instead.
+
+## Shipping a change
+
+Each codebase's `AGENTS.md` has a **Shipping** section: the gate (its checks, run in
+a clean clone), how a change merges, when anything is pushed, what stops for the
+owner's yes (new dependencies, data migrations, anything published), which areas get
+the strongest reviewer, and any shared test devices. Every agent follows it, and an
+idea-to-merge skill reads it instead of carrying rules of its own.
+
+By default, finished work stops **ready to land**: gated, reviewed, fixed, and caught
+up with the default branch. **Land** means merging it into the local default branch,
+on the owner's word. **Push** means sending that branch to GitHub, which is a
+separate word. Setup asks for these answers and writes them into the section.
 
 ## Default stacks
 
@@ -227,6 +241,13 @@ Skip: claude-mem (a second, global memory store, with hosted sync), Ponytail (it
 duplicates the simplicity rules in `AGENTS.md`), GSD (a competing workflow to
 superpowers), and the find-skills skill (run `npx skills find <query>` when
 needed instead). Built in already: `/code-review`, `/security-review`, `/simplify`.
+
+An idea-to-merge skill, one that builds, gates, reviews and reports while you're
+away, should read the codebase's Shipping section rather than bring its own rules.
+An idea-scouting skill, one that researches other products and returns a verdict
+before anything is built, should keep its findings in `docs/research/` (a landscape
+of products, a list of ideas with the owner's call, one brief per idea) so research
+builds up instead of starting over.
 
 ### Design workflow for a site
 
@@ -346,6 +367,18 @@ tell of AI design), so setup installs one, impeccable by default. Agents also
 forget accepted and rejected choices between sessions and drift back to generic
 defaults, so DESIGN.md holds the rules and `docs/design/decisions.md` holds the
 history, read before any frontend change.
+
+**Shipping rules live with the code, and merging waits for the owner.** A cloud
+coding session sees only the code repository, so rules kept only in the workspace
+never reach it. On one project, merging every green, reviewed change without asking
+filled the main branch with work nobody had seen running, while that branch fed tester
+builds. Finished work now stops ready to land, and landing is one word.
+
+**Research builds up in one place.** One project researched the same rival products
+from scratch in six separate reports. Findings now accumulate in
+`docs/research/landscape.md`, which every new piece of research reads first, and
+`docs/research/ideas.md` keeps each idea's verdict apart from the owner's decision,
+so a parked idea isn't proposed again as new.
 
 **Code search stays whole.** The root `.gitignore` hides each codebase from the
 root repository, and code search honors `.gitignore`, so a search from the root

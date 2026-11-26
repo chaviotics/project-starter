@@ -30,7 +30,7 @@ in the same session; agents trust it, so a stale one misleads.
 ├── open-items.md         <- deferred decisions and known risks
 ├── session-log.md, logs/ <- this month's index; one file per logged session
 ├── memory/               <- the one memory store, indexed by memory/MEMORY.md
-├── docs/                 <- sot.md, accounts.md, source/ originals, design/
+├── docs/                 <- sot.md, accounts.md, source/ originals, design/, research/
 └── {{APP_DIR}}/          <- separate repository: the deliverable
 ```
 
@@ -73,8 +73,9 @@ hooks, skills, and this file all load from where a session starts.
 2. **Log only what is worth finding later**: a decision, a scope change, or
    something costly to rediscover gets `logs/YYYY-MM-DD-NN-slug.md` (from
    `logs/_template.md`) and a `session-log.md` row. A tweak's record is its commit.
-3. A deferred decision or risk goes in `open-items.md`. A lasting fact goes in
-   `memory/`.
+3. A deferred decision or risk goes in `open-items.md`. Every researched idea has a
+   row in `docs/research/ideas.md`; update its owner's call when it changes. A lasting
+   fact goes in `memory/`.
 4. Commit code in its codebase repository and planning here, never across the
    boundary. No AI co-author or attribution lines in commits or PRs.
 5. Run `scripts/check-workspace.sh` and fix what it flags in files you touched.
@@ -91,8 +92,9 @@ its specs and plans go in `docs/specs/` and `docs/plans/` here until it's create
 Specs and plans are for features and multi-file changes; a tweak goes straight to
 code with a clear commit message.
 
-**Worktrees** of a codebase go in `.worktrees/` at this root:
-`git -C {{APP_DIR}} worktree add ../.worktrees/<branch> -b <branch>`. Don't use
+**Worktrees** of a codebase go in `.worktrees/` at this root, named after the branch
+with `/` replaced by `-`, from the default branch:
+`git -C {{APP_DIR}} worktree add ../.worktrees/<name> -b <branch> <default-branch>`. Don't use
 Claude Code's built-in worktree command from here; it would branch this planning
 repository, not the code.
 

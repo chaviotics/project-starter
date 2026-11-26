@@ -13,7 +13,9 @@ from; it stays here, so a codebase that waits still has it.
 2. Fill in this folder's `AGENTS.md`: the stack and its reason (for a default,
    also its row's code notes), where things live, the exact command
    strings (ask for them; never guess `npm` versus `pnpm`), dev-server notes,
-   default branch, and the engineering and content invariants copied from the
+   default branch, the Shipping section from the setup answers (defaults: merge
+   when the owner says "land it", push waits for the owner), and the engineering
+   and content invariants copied from the
    root `AGENTS.md`. Never copy payment or approval windows, because on client
    work this repository is client-visible. Commands that don't exist yet share
    one open item: `TODO: not set up yet (open-items #N)`. Follow its SETUP:

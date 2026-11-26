@@ -24,14 +24,12 @@ ships its own docs inside `node_modules` (or the equivalent), read those.
 
 {{WHERE_THINGS_LIVE}}
 
-**First scaffold.** Generators such as `create-next-app` refuse a directory that
-already holds `AGENTS.md`, `CLAUDE.md`, or `.claude/`. Move those aside, run the
-generator, and restore them. If the generator wrote its own `AGENTS.md` or
-`CLAUDE.md`, merge its content into the top of this file and keep `CLAUDE.md` to the
-one line. Confirm `.gitignore` still has the agent-local block from setup. Then run
-the claude-code-setup automation recommender once (it reads, never writes) and
-apply only what the human approves, with any config at the workspace root, not
-here. Delete this paragraph afterward.
+**First scaffold.** Generators such as `create-next-app` refuse a directory holding
+`AGENTS.md`, `CLAUDE.md`, or `.claude/`: move those aside, run it, restore them, and
+merge any `AGENTS.md`/`CLAUDE.md` it wrote into the top of this file (`CLAUDE.md`
+stays one line). Confirm `.gitignore` still has setup's agent-local block. Run the
+claude-code-setup automation recommender once (it only reads) and apply only what
+the human approves, at the workspace root. Delete this paragraph afterward.
 
 - `docs/superpowers/specs/` and `docs/superpowers/plans/` are the only home for
   specs and plans. They are committed with the work they describe.
@@ -51,10 +49,9 @@ here. Delete this paragraph afterward.
 | Build | `{{CMD_BUILD}}` |
 | Deploy preview | `{{CMD_DEPLOY_PREVIEW}}` |
 
-**Done means verified.** Before saying something works, run test, type-check,
-lint, and build. For anything visible, also check it in a browser at phone and
-desktop widths. Report failures with their output. Never weaken or delete a test to
-make it pass.
+**Done means verified.** Before saying something works, run test, type-check, lint,
+and build, and check anything visible in a browser at phone and desktop widths.
+Report failures with their output. Never weaken or delete a test to make it pass.
 
 ### The dev server belongs to the human
 
@@ -66,6 +63,28 @@ make it pass.
    the turn ends.
 3. Never `pkill node`, `killall`, or kill by port without reading the process's
    command line first.
+
+## Shipping
+
+<!-- SETUP: Fill from the Shipping answers in setup. SHIP_MERGE: `when the owner says
+     "land it"` (default) | `automatically` | `through a pull request the owner
+     merges`. SHIP_PUSH: `waits for the owner's word: nothing leaves the machine`
+     (default) | `feature branches and PRs; the owner merges` | `the default branch
+     after each merge`. SHIP_STOP_EXTRA: project-specific stop signs, each starting
+     with ", ", or nothing. Delete the review or devices line when it has nothing
+     to name. -->
+
+How a finished change lands here. Every agent follows it.
+
+- **Gate:** test, type-check, lint and build from Commands, in a clean clone of the
+  branch tip; every exit code 0.
+- **Merge:** one `--no-ff` merge per change into `{{DEFAULT_BRANCH}}`, after the gate
+  and an independent review, {{SHIP_MERGE}}.
+- **Push:** {{SHIP_PUSH}}.
+- **Stop and ask before merging:** new dependencies, data migrations, anything
+  published{{SHIP_STOP_EXTRA}}.
+- **Review with the strongest model:** {{SHIP_RISKY}}.
+- **Shared devices or accounts:** {{SHIP_DEVICES}}.
 
 ## Git
 
@@ -90,9 +109,8 @@ into any of them.
 
 ## Project invariants (don't violate without flagging)
 
-The workspace `AGENTS.md` invariants, repeated because this repository must stand
-alone after handover; payment and approval windows stay in the workspace only.
-Update both files when an invariant changes.
+The workspace `AGENTS.md` invariants, repeated so this repository stands alone after
+handover (payment and approval windows stay there). Update both when one changes.
 
 - {{INVARIANT_1}}
 - {{INVARIANT_2}}
@@ -123,8 +141,7 @@ Update both files when an invariant changes.
 ## Behavioral rules
 
 *Adapted from the community-distilled version of Andrej Karpathy's coding-agent
-observations. They bias toward caution over speed; for trivial tasks, use
-judgment.*
+observations. Caution over speed; for trivial tasks, use judgment.*
 
 ### 1. Think before coding
 
@@ -142,8 +159,7 @@ judgment.*
 - No features beyond what was asked, and no abstractions for single-use code.
 - No flexibility or configurability that wasn't requested.
 - No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it. Would a senior engineer
-  call it overcomplicated? Then simplify.
+- If 200 lines could be 50, rewrite it. Overcomplicated to a senior engineer? Simplify.
 
 ### 3. Surgical changes
 
@@ -165,37 +181,25 @@ The test: every changed line traces directly to the request.
 - "Fix the bug" → write a test that reproduces it, then make it pass.
 - "Refactor X" → make sure the tests pass before and after.
 
-For multi-step work, state a brief plan:
-
-```text
-1. [step] → verify: [check]
-2. [step] → verify: [check]
-```
-
-Strong criteria let you loop on your own; weak ones ("make it work") need constant
-clarification.
+For multi-step work, state a brief plan with a verify step per item
+(`1. [step] → verify: [check]`). Strong criteria let you loop on your own; weak ones
+("make it work") need constant clarification.
 
 ### 5. Suggest a better way
 
 Rules 1–4 lean toward restraint; this one balances them. When a clearly better
-approach exists, say so with concrete reasoning instead of silently complying with
-a worse one.
-
-The rules are working when diffs carry fewer unnecessary changes, fewer rewrites
-come from overcomplication, and clarifying questions come before implementation
-rather than after mistakes.
+approach exists, say so with concrete reasoning instead of silently complying. The
+rules are working when diffs carry fewer unnecessary changes and clarifying
+questions come before implementation, not after mistakes.
 
 ## Continuity
 
-During the build, current status, decisions, logs, and memory live in the private
-workspace one level up: `../project-status.md`, `../open-items.md`,
-`../session-log.md`, `../logs/`, and `../memory/`. Start sessions there, at the
-workspace root, so settings, hooks, and skills load. Update those files, not just
-chat, whenever something must cross a session or an agent boundary. Specs and plans
-are the exception and stay here.
-
-After handover these `../` paths don't exist; everything needed to work on the
-code stands on its own here.
+During the build, status, decisions, logs, and memory live in the private workspace
+one level up (`../project-status.md`, `../open-items.md`, `../session-log.md`,
+`../logs/`, `../memory/`). Start sessions there so settings, hooks, and skills load,
+and update those files, not just chat, whenever something must cross a session or
+an agent boundary. Specs and plans stay here. After handover the `../` paths don't
+exist; the code stands on its own.
 
 ## Confidentiality
 
